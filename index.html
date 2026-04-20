@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendário Editorial — Memória Cruzmaltina 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#0d1b2a;--navy-mid:#1a3350;--blue:#1d5fa8;--blue-light:#3b82c4;
+    --cyan:#00c2d4;--white:#ffffff;--bg:#f0f4f9;--card:#ffffff;
+    --border:#dce6f0;--text:#0d1b2a;--muted:#6b84a0;
+    --arte:#0099b8;--foto:#1a5fa8;--story:#6d28d9;--reels:#be1f1f;--carrossel:#047857;
+    --pend-bg:#fffbeb;--pend-brd:#d97706;--pend-txt:#92400e;
+    --shadow:0 2px 16px rgba(13,27,42,0.09);
+    --zarpei-green:#00b050;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;}
+
+  [contenteditable="true"]{outline:none;cursor:text;border-radius:4px;transition:background .15s;}
+  [contenteditable="true"]:hover{background:rgba(0,194,212,0.13);}
+  [contenteditable="true"]:focus{background:rgba(0,194,212,0.2);padding:0 4px;}
+  .edit-hint{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-top:3px;pointer-events:none;}
+
+  /* HEADER */
+  .site-header{background:var(--navy);padding:28px 40px 22px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .header-brand h1{font-family:'Playfair Display',serif;font-size:42px;color:var(--white);line-height:1;letter-spacing:-.5px;}
+  .header-brand h1 em{font-style:normal;color:var(--cyan);}
+  .header-brand .sub{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:6px;display:block;}
+  .header-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;}
+  .chip.arte{background:var(--arte);color:#fff;}.chip.foto{background:var(--foto);color:#fff;}
+  .chip.story{background:var(--story);color:#fff;}.chip.reels{background:var(--reels);color:#fff;}
+  .chip.carrossel{background:var(--carrossel);color:#fff;}
+  .chip.pendente{background:var(--pend-bg);color:var(--pend-txt);border:1.5px dashed var(--pend-brd);}
+
+  /* TOOLBAR */
+  .toolbar{background:var(--navy-mid);padding:10px 40px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+  .toolbar-label{font-size:10px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-right:4px;}
+  .btn{padding:7px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);}
+  .btn-ghost:hover{background:rgba(255,255,255,.16);}
+  .btn-cyan{background:var(--cyan);color:var(--navy);}.btn-cyan:hover{filter:brightness(1.08);}
+  .btn-danger{background:var(--reels);color:#fff;}.btn-danger:hover{filter:brightness(1.08);}
+  .month-nav{display:flex;gap:6px;align-items:center;margin-left:auto;}
+  .month-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .month-btn:hover{background:rgba(255,255,255,.25);}
+  .month-btn.active{background:var(--cyan);color:var(--navy);border-color:var(--cyan);}
+
+  /* YEAR STATS */
+  .stats-bar{max-width:1400px;margin:28px auto 0;padding:0 24px;display:flex;gap:10px;flex-wrap:wrap;}
+  .stat-pill{background:var(--card);border-radius:12px;padding:12px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:3px;min-width:80px;flex:1;}
+  .stat-pill .num{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;}
+  .stat-pill .lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+
+  /* MONTH BLOCK */
+  .months-container{max-width:1400px;margin:0 auto;padding:0 24px;}
+  .month-block{margin-top:32px;scroll-margin-top:60px;}
+  .month-header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+  .month-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);}
+  .month-title em{font-style:normal;color:var(--cyan);}
+  .month-badge{background:var(--navy);color:var(--cyan);border-radius:8px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+  .month-notes{background:#fff;border-left:4px solid var(--cyan);border-radius:0 10px 10px 0;padding:10px 16px;font-size:12px;color:var(--navy-mid);line-height:1.6;margin-bottom:12px;box-shadow:var(--shadow);min-height:36px;}
+  .month-notes:empty:before{content:attr(placeholder);color:var(--muted);pointer-events:none;}
+  .month-notes:focus{outline:none;background:#f5fdff;}
+  .month-notes strong{color:var(--navy);font-weight:700;}
+
+  /* PLANNING PANEL */
+  .plan-panel{background:var(--card);border-radius:16px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;}
+  .plan-grid{display:grid;grid-template-columns:repeat(3,1fr) repeat(2,1fr);gap:0;}
+  .plan-grid-bottom{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--border);}
+  .plan-cell{padding:14px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+  .plan-cell:last-child{border-right:none;}
+  .plan-cell-full{padding:14px 16px;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--border);}
+  .plan-cell-full:last-child{border-right:none;}
+  .plan-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .plan-label span{font-size:13px;}
+  .plan-input{border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);outline:none;transition:border-color .2s,background .2s;width:100%;background:#fafcff;resize:none;}
+  .plan-input:focus{border-color:var(--cyan);background:#fff;}
+  .plan-input.tall{min-height:58px;resize:vertical;}
+  .plan-header-row{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+  .plan-header-row span{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);}
+  .plan-header-row .plan-icon{font-size:14px;}
+  @media(max-width:900px){.plan-grid{grid-template-columns:1fr 1fr;}.plan-grid-bottom{grid-template-columns:1fr;}}
+
+  /* CALENDAR */
+  .cal-grid-outer{background:var(--card);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:4px;}
+  .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--navy);}
+  .cal-dow-cell{padding:12px 8px;text-align:center;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--cyan);}
+  .cal-dow-cell.wknd{opacity:.5;}
+  .cal-weeks{display:flex;flex-direction:column;}
+  .cal-week{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border);}
+  .cal-week:last-child{border-bottom:none;}
+  .cal-day{min-height:140px;border-right:1px solid var(--border);padding:8px 7px;display:flex;flex-direction:column;gap:5px;position:relative;transition:background .12s;}
+  .cal-day:last-child{border-right:none;}
+  .cal-day.empty{background:#f8fafd;pointer-events:none;}
+  .cal-day.wknd-col{background:#fafcff;}
+  .cal-day:not(.empty):hover{background:#f3f8ff;}
+  .day-num{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy);line-height:1;}
+  .cal-day.empty .day-num{color:#c8d5e5;}
+  .special-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#b45309;background:#fef3c7;border-radius:4px;padding:2px 5px;display:inline-block;width:fit-content;line-height:1.4;}
+  .special-label.promo{color:#065f46;background:#d1fae5;}
+  .special-label.campaign{color:#4c1d95;background:#ede9fe;}
+
+  /* POST CARD */
+  .post-card{border-radius:8px;padding:6px 7px;flex:1;display:flex;flex-direction:column;gap:3px;position:relative;cursor:pointer;transition:filter .12s,transform .12s;overflow:hidden;}
+  .post-card:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .post-card.arte{background:var(--arte);}.post-card.foto{background:var(--foto);}
+  .post-card.story{background:var(--story);}.post-card.reels{background:var(--reels);}
+  .post-card.carrossel{background:var(--carrossel);}
+  .post-card.pendente{background:var(--pend-bg)!important;border:1.5px dashed var(--pend-brd);}
+  .post-card.postado{opacity:.55;filter:grayscale(.4);}
+  .postado-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.22);border-radius:4px;padding:2px 5px;font-size:8px;font-weight:800;letter-spacing:1px;color:#fff;text-transform:uppercase;width:fit-content;}
+  .post-card.pendente .postado-badge{background:rgba(0,0,0,.08);color:var(--pend-txt);}
+  .post-card.postado .postado-badge{background:rgba(16,185,129,.3);color:#fff;}
+  .video-link-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.2);border-radius:4px;padding:2px 6px;font-size:8px;font-weight:800;letter-spacing:.8px;color:#fff;text-decoration:none;text-transform:uppercase;width:fit-content;transition:background .12s;}
+  .video-link-badge:hover{background:rgba(255,255,255,.35);}
+  .tp-icon{position:absolute;bottom:5px;right:6px;font-size:12px;line-height:1;opacity:.9;pointer-events:none;}
+  .post-type-tag{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.75);}
+  .post-card.pendente .post-type-tag{color:var(--pend-brd);}
+  .post-title{font-size:10px;font-weight:600;color:#fff;line-height:1.3;outline:none;min-height:12px;word-break:break-word;}
+  .post-card.pendente .post-title{color:var(--pend-txt);}
+  .post-title:focus{background:rgba(255,255,255,.15);border-radius:3px;padding:1px 3px;}
+  .post-meta{font-size:8px;color:rgba(255,255,255,.6);font-weight:500;}
+  .post-card.pendente .post-meta{color:var(--pend-brd);}
+  .card-gallery{display:flex;flex-wrap:wrap;gap:2px;margin-top:2px;}
+  .card-thumb{position:relative;width:30px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;background:rgba(0,0,0,.2);}
+  .card-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card-thumb .rm-thumb{display:none;position:absolute;inset:0;background:rgba(190,31,31,.8);color:#fff;font-size:11px;align-items:center;justify-content:center;cursor:pointer;border:none;}
+  .card-thumb:hover .rm-thumb{display:flex;}
+  .add-thumb-btn{width:30px;height:30px;border-radius:4px;border:1.5px dashed rgba(255,255,255,.4);background:transparent;color:rgba(255,255,255,.6);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;}
+  .add-thumb-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.9);color:#fff;}
+  .card-actions{display:none;position:absolute;top:4px;right:4px;gap:2px;}
+  .post-card:hover .card-actions{display:flex;}
+  .card-btn{width:18px;height:18px;border-radius:3px;border:none;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.25);color:#fff;transition:background .1s;}
+  .card-btn:hover{background:rgba(255,255,255,.45);}
+  .add-post-btn{border:1.5px dashed #c5d5e8;border-radius:8px;padding:5px;text-align:center;font-size:9px;color:#9ab0c8;cursor:pointer;transition:all .15s;font-weight:600;background:transparent;width:100%;}
+  .add-post-btn:hover{border-color:var(--blue-light);color:var(--blue-light);background:#eef4ff;}
+
+  /* LIGHTBOX */
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(5,10,20,.92);backdrop-filter:blur(8px);z-index:2000;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:16px;}
+  .lightbox.open{display:flex;}
+  .lightbox-img-wrap{position:relative;max-width:90vw;max-height:78vh;display:flex;align-items:center;justify-content:center;}
+  .lightbox-img-wrap img{max-width:90vw;max-height:78vh;border-radius:12px;box-shadow:0 32px 80px rgba(0,0,0,.6);object-fit:contain;display:block;}
+  .lightbox-close{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;border:2px solid rgba(255,255,255,.2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .lightbox-close:hover{background:var(--reels);}
+  .lightbox-nav{display:flex;align-items:center;gap:16px;}
+  .lightbox-nav-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .lightbox-nav-btn:disabled{opacity:.25;cursor:default;}
+  .lightbox-counter{color:rgba(255,255,255,.6);font-size:12px;font-weight:600;letter-spacing:1px;min-width:60px;text-align:center;}
+  .lightbox-info .lb-title{font-family:'Playfair Display',serif;font-size:18px;color:#fff;margin-bottom:4px;text-align:center;}
+  .lightbox-info .lb-date{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:1.5px;text-transform:uppercase;text-align:center;}
+  body.view-mode .card-thumb{cursor:zoom-in;}
+  body.view-mode .card-thumb .rm-thumb{display:none!important;}
+  body.view-mode .add-thumb-btn{display:none!important;}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(13,27,42,.55);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:20px;width:100%;max-width:580px;box-shadow:0 24px 64px rgba(13,27,42,.22);overflow:hidden;animation:modalIn .18s ease;max-height:92vh;display:flex;flex-direction:column;}
+  @keyframes modalIn{from{transform:translateY(14px) scale(.97);opacity:0;}to{transform:none;opacity:1;}}
+  .modal-header{background:var(--navy);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .modal-header h3{font-family:'Playfair Display',serif;font-size:19px;color:#fff;}
+  .modal-header h3 span{color:var(--cyan);}
+  .modal-close{width:30px;height:30px;border-radius:7px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .modal-close:hover{background:rgba(255,255,255,.2);}
+  .modal-body{padding:20px 24px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+  .form-group input,.form-group textarea,.form-group select{border:1.5px solid var(--border);border-radius:10px;padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;width:100%;}
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--blue);}
+  .form-group textarea{resize:vertical;min-height:72px;}
+  .type-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .type-opt{padding:7px 4px;border-radius:8px;border:2px solid var(--border);text-align:center;font-size:10px;font-weight:700;cursor:pointer;transition:all .12s;color:var(--muted);}
+  .type-opt:hover{border-color:var(--blue-light);color:var(--blue);}
+  .type-opt.selected{color:#fff;border-color:transparent;}
+  .type-opt[data-type="arte"].selected{background:var(--arte);}
+  .type-opt[data-type="foto"].selected{background:var(--foto);}
+  .type-opt[data-type="story"].selected{background:var(--story);}
+  .type-opt[data-type="reels"].selected{background:var(--reels);}
+  .type-opt[data-type="carrossel"].selected{background:var(--carrossel);}
+  .mgal-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+  .mgal-hint{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:#aab;}
+  .modal-gallery{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border:1.5px dashed var(--border);border-radius:12px;min-height:60px;align-items:flex-start;transition:border-color .15s,background .15s;}
+  .modal-gallery.drag-over{border-color:var(--cyan);background:#e8fafb;}
+  .mgal-thumb{position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;background:#eee;}
+  .mgal-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .mgal-thumb .rm-btn{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:4px;background:rgba(190,31,31,.85);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
+  .mgal-thumb:hover .rm-btn{opacity:1;}
+  .mgal-add{width:72px;height:72px;border-radius:8px;border:2px dashed #c5d5e8;background:transparent;color:#9ab0c8;font-size:24px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all .15s;}
+  .mgal-add span.lbl{font-size:9px;font-weight:700;}
+  .mgal-add:hover{border-color:var(--blue-light);color:var(--blue);background:#eef4ff;}
+  .pending-toggle{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:10px;background:var(--pend-bg);border:1.5px dashed var(--pend-brd);cursor:pointer;font-size:13px;font-weight:600;color:var(--pend-txt);user-select:none;}
+  .pending-toggle input{accent-color:var(--pend-brd);width:15px;height:15px;}
+  .modal-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;}
+
+  /* DATAS MODAL */
+  .datas-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;}
+  .data-row{display:grid;grid-template-columns:60px 1fr 36px;gap:8px;align-items:center;}
+  .data-row .day-input{border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:13px;text-align:center;outline:none;width:100%;}
+  .data-row .label-input{border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;}
+  .data-row .rm-data-btn{width:34px;height:34px;border-radius:8px;border:none;background:#fee2e2;color:#be1f1f;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .add-data-btn{border:1.5px dashed var(--border);border-radius:8px;padding:8px;text-align:center;font-size:12px;color:var(--muted);cursor:pointer;font-weight:600;background:transparent;width:100%;transition:all .15s;margin-top:4px;}
+  .add-data-btn:hover{border-color:var(--blue);color:var(--blue);background:#eef4ff;}
+  .data-col-labels{display:grid;grid-template-columns:60px 1fr 36px;gap:8px;padding:0 0 4px;}
+  .data-col-labels span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);}
+  /* DATAS MODAL */
+  .datas-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;}
+  .data-row{display:grid;grid-template-columns:60px 1fr 36px;gap:8px;align-items:center;}
+  .add-data-btn{border:1.5px dashed var(--border);border-radius:8px;padding:8px;text-align:center;font-size:12px;color:var(--muted);cursor:pointer;font-weight:600;background:transparent;width:100%;transition:all .15s;margin-top:4px;}
+  .add-data-btn:hover{border-color:var(--blue);color:var(--blue);background:#eef4ff;}
+  .data-col-labels{display:grid;grid-template-columns:60px 1fr 36px;gap:8px;padding:0 0 4px;}
+  .data-col-labels span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);}
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;}
+  .toast.show{transform:none;opacity:1;}
+
+  @media print{.toolbar,.add-post-btn,.card-actions,.add-thumb-btn{display:none!important;}body{background:#fff;}.post-card{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <h1><span contenteditable="true" id="hdrClient" style="outline:none;">Memória Cruzmaltina</span> · <em contenteditable="true" id="hdrYear" style="outline:none;">2026</em></h1>
+    <span class="sub" contenteditable="true" id="hdrSub" style="outline:none;">Calendário Editorial — Acervo · História · Colecionismo</span>
+    <div class="edit-hint">✏ clique em qualquer texto para editar</div>
+  </div>
+  <div class="header-meta">
+    <span class="chip carrossel">🖼 Carrossel</span>
+    <span class="chip pendente">⏳ Pendente</span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <span class="toolbar-label">Ações:</span>
+  <button class="btn btn-cyan" onclick="window.print()">🖨 Imprimir</button>
+  <button class="btn btn-cyan" onclick="salvarAlteracoes()">💾 Salvar alterações</button>
+  <button class="btn btn-danger" onclick="resetGithubToken()">🔐 Token GitHub</button>
+  <button class="btn btn-ghost" onclick="exportHTML()">📥 Salvar HTML</button>
+  <button class="btn btn-ghost" id="editModeBtn" onclick="toggleEditMode()">✏️ Modo Edição</button>
+  <button class="btn btn-ghost" onclick="openDatasModal()">🗓 Datas Comemorativas</button>
+  <div class="month-nav" id="monthNav"></div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-pill"><div class="num" style="color:var(--navy)" id="statTotal">0</div><div class="lbl">Total Posts</div></div>
+  <div class="stat-pill"><div class="num" style="color:var(--carrossel)" id="statCarrossel">0</div><div class="lbl">Carrosseis</div></div>
+  <div class="stat-pill"><div class="num" style="color:var(--pend-brd)" id="statPend">0</div><div class="lbl">Pendentes</div></div>
+  <div class="stat-pill"><div class="num" style="color:#059669" id="statPostado">0</div><div class="lbl">Postados</div></div>
+</div>
+
+<div class="months-container" id="monthsContainer"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Editar Carrossel · <span id="modalDateLabel"></span></h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Tipo de Conteúdo</label>
+        <div class="type-grid">
+          <div class="type-opt" data-type="arte" onclick="selectType('arte')">🎨 Arte</div>
+          <div class="type-opt" data-type="foto" onclick="selectType('foto')">📸 Foto</div>
+          <div class="type-opt" data-type="story" onclick="selectType('story')">📱 Story</div>
+          <div class="type-opt" data-type="reels" onclick="selectType('reels')">🎬 Reels</div>
+          <div class="type-opt" data-type="carrossel" onclick="selectType('carrossel')">🖼 Carrossel</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Título / Frase da Postagem</label>
+        <input type="text" id="modalPostTitle" placeholder="Ex: Nem todo dia precisa ser correria">
+      </div>
+      <div class="form-group" id="fieldImgObs" style="display:none">
+        <label>Observações de Imagem / Vídeo</label>
+        <textarea id="modalImgObs" placeholder="Descreva a imagem ideal, enquadramento, luz, referências…" style="min-height:120px"></textarea>
+      </div>
+      <div class="form-group" id="fieldRoteiro" style="display:none">
+        <label>Roteiro do Reels</label>
+        <textarea id="modalRoteiro" placeholder="Descreva cena por cena, trilha, texto na tela…" style="min-height:160px"></textarea>
+      </div>
+      <div class="form-group" id="fieldSlides" style="display:none">
+        <label>Conteúdo dos Slides</label>
+        <textarea id="modalSlides" placeholder="Slide 1: [texto e ideia de foto]&#10;Slide 2: …" style="min-height:160px"></textarea>
+      </div>
+      <div class="form-group" id="fieldSlidesNum" style="display:none">
+        <label>Nº de Slides</label>
+        <input type="text" id="modalSlidesNum" placeholder="Ex: 7 slides">
+      </div>
+      <div class="form-group" id="fieldCaption">
+        <label>Legenda completa</label>
+        <textarea id="modalCaption" placeholder="Texto, hashtags, telefone…"></textarea>
+      </div>
+      <div class="form-group">
+        <div class="mgal-label">Imagens / Fotos <span class="mgal-hint">— arraste ou clique em ＋</span></div>
+        <div class="modal-gallery" id="modalGallery"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handleDrop(event)">
+        </div>
+      </div>
+      <div class="form-group" id="fieldVideoLink" style="display:none">
+        <label>🎬 Link do Vídeo</label>
+        <input type="url" id="modalVideoLink" placeholder="https://drive.google.com/…">
+      </div>
+      <label class="pending-toggle">
+        <input type="checkbox" id="modalPending"> ⏳ Marcar como Pendente
+      </label>
+      <label class="pending-toggle" style="background:#f0fdf4;border-color:#059669;color:#065f46;">
+        <input type="checkbox" id="modalPostado" style="accent-color:#059669;"> ✅ Marcar como Postado
+      </label>
+      <label class="pending-toggle" style="background:#fff7ed;border-color:#f97316;color:#9a3412;">
+        <input type="checkbox" id="modalTrafego" style="accent-color:#f97316;"> 💸 Sugestão de Tráfego Pago (R$1.000/mês)
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deletePost()">🗑 Excluir</button>
+      <button class="btn btn-ghost" style="color:#333;border-color:#ccc" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-cyan" onclick="savePost()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-info">
+    <div class="lb-title" id="lbTitle"></div>
+    <div class="lb-date" id="lbDate"></div>
+  </div>
+  <div class="lightbox-img-wrap" onclick="event.stopPropagation()">
+    <img id="lbImg" src="" alt="">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  </div>
+  <div class="lightbox-nav" onclick="event.stopPropagation()">
+    <button class="lightbox-nav-btn" id="lbPrev" onclick="lbStep(-1)">‹</button>
+    <span class="lightbox-counter" id="lbCounter"></span>
+    <button class="lightbox-nav-btn" id="lbNext" onclick="lbStep(1)">›</button>
+  </div>
+</div>
+
+<!-- DATAS COMEMORATIVAS MODAL -->
+<div class="modal-overlay" id="datasOverlay">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h3>🗓 Datas <span>Comemorativas</span></h3>
+      <button class="modal-close" onclick="closeDatasModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Mês</label>
+        <select id="datasMonthSel" style="border:1.5px solid var(--border);border-radius:10px;padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;background:#fafcff;">
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+          <option value="3">Março</option><option value="4">Abril</option>
+          <option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option>
+          <option value="9">Setembro</option><option value="10">Outubro</option>
+          <option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">Adicione, edite ou remova datas comemorativas que aparecem como etiqueta no calendário.</p>
+      <div class="data-col-labels">
+        <span>Dia</span><span>Nome da data</span><span></span>
+      </div>
+      <div class="datas-list" id="datasList"></div>
+      <button class="add-data-btn" onclick="addDataRow()">＋ Adicionar data</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" style="color:#333;border-color:#ccc" onclick="closeDatasModal()">Cancelar</button>
+      <button class="btn btn-cyan" onclick="saveDatas()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script id="persisted-state">
+window.__PERSISTED_CALENDAR_STATE__ = window.__PERSISTED_CALENDAR_STATE__ || null;
+</script>
+
+<script id="github-persist">
+const GITHUB_CONFIG = {
+  owner: "COLOQUE_AQUI",
+  repo: "COLOQUE_AQUI",
+  path: "index.html",
+  branch: "main"
+};
+
+function clearLegacyGithubConfig() {
+  const legacyKeys = ["github_owner","github_repo","github_path","github_branch","repo","owner","branch","path"];
+  legacyKeys.forEach(key => localStorage.removeItem(key));
+}
+
+function getGithubToken() {
+  let token = localStorage.getItem("github_token");
+  if (!token) {
+    token = prompt("Cole seu token do GitHub:");
+    if (!token) throw new Error("Token não informado.");
+    token = token.trim();
+    localStorage.setItem("github_token", token);
+  }
+  return token;
+}
+
+function resetGithubToken() {
+  localStorage.removeItem("github_token");
+  clearLegacyGithubConfig();
+  showToast("🔐 Token removido. Ele será solicitado novamente.");
+}
+
+function encodeBase64Unicode(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function collectCalendarState() {
+  return {
+    posts: JSON.parse(JSON.stringify(window.POSTS || [])),
+    planData: JSON.parse(JSON.stringify(window.PLAN_DATA || {})),
+    monthsConfig: JSON.parse(JSON.stringify(window.MONTHS_CONFIG || [])),
+    header: {
+      client: document.getElementById("hdrClient")?.innerText || "",
+      year: document.getElementById("hdrYear")?.innerText || "",
+      sub: document.getElementById("hdrSub")?.innerText || ""
+    }
+  };
+}
+
+function applyCalendarState(state) {
+  if (!state) return;
+  if (state.header) {
+    const hdrClient = document.getElementById("hdrClient");
+    const hdrYear = document.getElementById("hdrYear");
+    const hdrSub = document.getElementById("hdrSub");
+    if (hdrClient) hdrClient.innerText = state.header.client || hdrClient.innerText;
+    if (hdrYear) hdrYear.innerText = state.header.year || hdrYear.innerText;
+    if (hdrSub) hdrSub.innerText = state.header.sub || hdrSub.innerText;
+  }
+  if (Array.isArray(state.monthsConfig) && Array.isArray(window.MONTHS_CONFIG)) {
+    state.monthsConfig.forEach((savedMonth, idx) => {
+      if (!window.MONTHS_CONFIG[idx]) return;
+      const target = window.MONTHS_CONFIG[idx];
+      Object.keys(savedMonth || {}).forEach((key) => {
+        target[key] = key === "special"
+          ? JSON.parse(JSON.stringify(savedMonth.special || {}))
+          : savedMonth[key];
+      });
+    });
+  }
+  if (Array.isArray(state.posts)) window.POSTS = JSON.parse(JSON.stringify(state.posts));
+  if (state.planData && typeof state.planData === "object") window.PLAN_DATA = JSON.parse(JSON.stringify(state.planData));
+}
+
+function buildPersistentHtml(state) {
+  let html = document.documentElement.outerHTML;
+  const stateScript = `<script id="persisted-state">\nwindow.__PERSISTED_CALENDAR_STATE__ = ${JSON.stringify(state)};\n<\/script>`;
+  const persistedRegex = /<script id="persisted-state">[\s\S]*?<\/script>/;
+  if (persistedRegex.test(html)) {
+    html = html.replace(persistedRegex, stateScript);
+  } else if (html.includes('<script id="github-persist">')) {
+    html = html.replace('<script id="github-persist">', stateScript + '\n\n<script id="github-persist">');
+  } else {
+    html = html.replace('</body>', stateScript + '\n</body>');
+  }
+  return html;
+}
+
+async function getGithubFileMeta(apiUrl, token, branch) {
+  const response = await fetch(apiUrl + `?ref=${encodeURIComponent(branch)}&t=${Date.now()}`, {
+    cache: "no-store",
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: "application/vnd.github+json"
+    }
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(`Não foi possível ler o arquivo no GitHub (${response.status}). ${err.message || ""}`.trim());
+  }
+  return response.json();
+}
+
+async function salvarAlteracoes() {
+  try {
+    clearLegacyGithubConfig();
+    const token = getGithubToken();
+    const { owner, repo, path, branch } = GITHUB_CONFIG;
+    if (!owner || owner === "COLOQUE_AQUI" || !repo || repo === "COLOQUE_AQUI") {
+      throw new Error("Preencha owner e repo no GITHUB_CONFIG antes de salvar.");
+    }
+
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const state = collectCalendarState();
+    const updatedHtml = buildPersistentHtml(state);
+    const content = encodeBase64Unicode(updatedHtml);
+
+    let currentFile = await getGithubFileMeta(apiUrl, token, branch);
+
+    const sendUpdate = async (sha) => {
+      return fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `Atualiza calendário editorial (${new Date().toLocaleString("pt-BR")})`,
+          content,
+          sha,
+          branch
+        })
+      });
+    };
+
+    let updateResponse = await sendUpdate(currentFile.sha);
+
+    if (updateResponse.status === 409) {
+      currentFile = await getGithubFileMeta(apiUrl, token, branch);
+      updateResponse = await sendUpdate(currentFile.sha);
+    }
+
+    if (!updateResponse.ok) {
+      const err = await updateResponse.json().catch(() => ({}));
+      let extra = err.message || "";
+      if (updateResponse.status === 409) {
+        extra = extra || "Conflito de versão no GitHub. Verifique se branch, path e arquivo estão corretos e tente novamente.";
+      }
+      throw new Error(`Não foi possível salvar no GitHub (${updateResponse.status}). ${extra}`.trim());
+    }
+
+    window.__PERSISTED_CALENDAR_STATE__ = state;
+    showToast("💾 Alterações salvas no GitHub com sucesso!");
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Erro ao salvar no GitHub.");
+  }
+}
+</script>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA STRUCTURES
+// ─────────────────────────────────────────────
+
+const MONTH_NAMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+// Each month: { year, month(1-12), firstDow(0=Sun), days, notes, special:{day:'label'} }
+const MONTHS_CONFIG = [
+  { year:2026, month:1,  firstDow:4, days:31, notes:'', special:{1:'🎆 Ano Novo',6:'🏖️ Feriado RJ'} },
+  { year:2026, month:2,  firstDow:0, days:28, notes:'', special:{16:'🎭 Carnaval',17:'🎭 Carnaval',18:'🎭 Quarta-feira de Cinzas'} },
+  { year:2026, month:3,  firstDow:0, days:31, notes:'', special:{8:'👩 Dia da Mulher',20:'🌿 Início do Outono'} },
+  { year:2026, month:4,  firstDow:3, days:30, notes:'Memória Cruzmaltina — 14 carrosseis planejados', special:{1:'🤥 Dia da Mentira',2:'🧩 Consciência do Autismo',3:'✝️ Sexta-Feira Santa',5:'🐣 Páscoa',6:'🙏 São Benedito',7:'🌍 Dia Mundial da Saúde',8:'🎗️ Combate ao Câncer',13:'💋 Dia do Beijo',14:'☕ Dia Mundial do Café',21:'🇧🇷 Tiradentes',22:'🌍 Dia da Terra',23:'⚔️ São Jorge',24:'🥩 Dia Int. do Churrasco',28:'👵 Dia da Sogra',30:'🎷 Dia Int. do Jazz'} },
+  { year:2026, month:5,  firstDow:5, days:31, notes:'', special:{10:'💐 Dia das Mães',31:'🟡 Fim Maio Amarelo'} },
+  { year:2026, month:6,  firstDow:1, days:30, notes:'', special:{5:'🌍 Meio Ambiente',12:'💑 Dia dos Namorados'} },
+  { year:2026, month:7,  firstDow:3, days:31, notes:'', special:{} },
+  { year:2026, month:8,  firstDow:6, days:31, notes:'', special:{9:'👨 Dia dos Pais'} },
+  { year:2026, month:9,  firstDow:2, days:30, notes:'', special:{7:'🇧🇷 Independência',15:'🛍️ Dia do Cliente',22:'🌸 Primavera'} },
+  { year:2026, month:10, firstDow:4, days:31, notes:'', special:{2:'👶 Dia das Crianças',12:'🇧🇷 N.Sra. Aparecida',31:'🎃 Halloween'} },
+  { year:2026, month:11, firstDow:0, days:30, notes:'', special:{2:'✝️ Finados',15:'🇧🇷 Proclamação Rep.',20:'⚫ Black Friday'} },
+  { year:2026, month:12, firstDow:2, days:31, notes:'', special:{8:'🎄 Imaculada Conceição',25:'🎄 Natal',31:'🥂 Réveillon'} }
+];
+
+// Pre-filled posts per month [{ month, day, type, title, pending, trafego, perfil }]
+let POSTS = [
+  {
+    "month": 4,
+    "day": 1,
+    "type": "carrossel",
+    "title": "Athleta 1974 | Away #16",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "A camisa mais historica do acervo. Primeiro titulo brasileiro de um clube carioca.",
+    "imgObs": "Slide 1 - CAPA: Athleta 1974 Away\nSlide 2 - CONTEXTO: 1 de agosto de 1974. Maracana. 112.933 pagantes. Vasco 2x1 Cruzeiro. Primeiro titulo brasileiro de um clube carioca. Roberto Dinamite artilheiro com 16 gols aos 20 anos.\nSlide 3 - COSTAS + ELENCO (#16): Andrada / Fidelis / Miguel / Moises / Alfinete / Alcir / Zanata / Ademir / Jorginho Carvoeiro / Roberto Dinamite / Luis Carlos. Tecnico: Mario Travaglini.\nSlide 4 - MOSAICO: Cruz vermelha costurada na faixa diagonal / Gola V com listras em canale / Numeracao vermelha / Marca Athleta - pioneira no futebol brasileiro / Tecido original da epoca\nSlide 5 - DESTAQUE: Sem patrocinador, sem adornos - pura identidade. Roberto Dinamite se tornou o artilheiro mais jovem da historia do Brasileirao naquele ano, recorde que existe ate hoje.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Athleta \u2013 1974 | AWAY\n\nA camisa mais historica do acervo. Fabricada pela Athleta, pioneira no fornecimento de uniformes para o futebol brasileiro, esta peca viveu o ano mais especial do futebol carioca: 1974, quando o Vasco tornou-se o primeiro clube do Rio de Janeiro a conquistar o Campeonato Brasileiro.\n\nNo dia 1 de agosto, diante de 112.933 pagantes no Maracana, o Vasco venceu o Cruzeiro por 2 a 1, com gols de Ademir e Jorginho Carvoeiro, numa final epica. O heroi daquela campanha? Um garoto de 20 anos chamado Roberto Dinamite, artilheiro do torneio com 16 gols - o mais jovem artilheiro da historia do Brasileirao. Um recorde que existe ate hoje.\n\nUma camisa que carrega o peso do inicio de tudo.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 3,
+    "type": "carrossel",
+    "title": "Adidas 1985 | Home #20",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Estreia de Romario nos profissionais. Patrocinio Golden Cross.",
+    "imgObs": "Slide 1 - CAPA: Adidas 1985 Home\nSlide 2 - CONTEXTO: 1985. No dia 6 de fevereiro, em Sao Januario, Romario entrou em campo pela primeira vez como profissional, aos 19 anos. Naquele mesmo ano, o Gigante estreava a parceria com a Golden Cross como patrocinador.\nSlide 3 - COSTAS + ELENCO (#20): Acacio / Edevaldo / Geovani / Mazinho / Vitor / Claudio Adao / Mario Tilico / Roberto Dinamite / Romario (estreia profissional)\nSlide 4 - MOSAICO: Logo Adidas Originals trevo / Cruz vermelha na faixa diagonal / Patrocinio Golden Cross / Gola V branca em canale / Numeracao vermelha com contorno preto\nSlide 5 - DESTAQUE: Esta camisa marca o inicio de uma era. O Vasco tinha em Roberto Dinamite o maior artilheiro do futebol brasileiro e recebia um garoto que estamparia seu nome na historia do futebol mundial: Romario.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Adidas \u2013 1985 | HOME\n\n1985. O Vasco iniciava uma nova era. No dia 6 de fevereiro, em Sao Januario, um garoto de 19 anos entrou em campo pela primeira vez como profissional - seu nome era Romario. Ao lado do maior artilheiro da historia do futebol brasileiro, Roberto Dinamite, o futuro campeao do mundo dava seus primeiros passos numa parceria que logo encantaria o futebol carioca.\n\nEsta camisa da Adidas traz tambem outro marco historico: a estreia da Golden Cross como patrocinador do Vasco, numa epoca em que o futebol brasileiro consolidava o modelo de patrocinios nas camisas.\n\nUm uniforme que representa o inicio de uma geracao que logo conquistaria o Brasil.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 6,
+    "type": "carrossel",
+    "title": "Kappa 1997 | Away #9 - Evair",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Tricampeonato brasileiro. Melhor ataque da historia do Brasileirao. Edmundo 29 gols.",
+    "imgObs": "Slide 1 - CAPA: Kappa 1997 Away\nSlide 2 - CONTEXTO: 1997. O Vasco conquistou o tricampeonato com 69 gols, Edmundo artilheiro com 29 gols em uma unica edicao (recorde ate hoje) e titulo no Maracana com 89 mil pessoas.\nSlide 3 - COSTAS + ELENCO (#9 EVAIR): Carlos Germano / Mauro Galvao / Odvan / Felipe / Luisinho / Nasa / Juninho Pernambucano / Ramon / Edmundo (29 gols) / Evair\nSlide 4 - MOSAICO: Logo Kappa / Escudo com 3 estrelas bordado / Numeracao exclusiva em circulo nas costas / Mangas pretas com logos Kappa / Listras vermelhas na faixa diagonal\nSlide 5 - EVAIR #9: A numeracao 9 pertenceu a Evair, o Garcao do tricampeonato. Reeditando com Edmundo a dupla que havia brilhado no Palmeiras, Evair e Edmundo marcaram 37 dos 69 gols do Gigante naquele Brasileiro.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Kappa \u2013 1997 | AWAY\n\nA camisa do tricampeonato. Em 1997, o Vasco da Gama escreveu uma das paginas mais gloriosas do futebol brasileiro: melhor ataque da historia do Brasileirao com 69 gols, Edmundo artilheiro com 29 tentos em uma unica edicao (recorde que permanece ate hoje) e titulo conquistado no Maracana com 89 mil pessoas nas arquibancadas.\n\nA numeracao 9 pertenceu a Evair, o parceiro perfeito do Animal. Juntos reeditaram a dupla devastadora do Palmeiras bicampeao e marcaram 37 dos 69 gols do Gigante naquele Brasileiro. Uma parceria eternizada na historia cruzmaltina.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 8,
+    "type": "carrossel",
+    "title": "Finta 1989 | Home | Manga Longa #9 - Bebeto",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Bicampeonato brasileiro. Raridade manga longa. Bebeto melhor jogador da America em 1989.",
+    "imgObs": "Slide 1 - CAPA: Finta 1989 Home Manga Longa\nSlide 2 - CONTEXTO: 16 de dezembro de 1989. Em pleno Morumbi, diante de 71.552 pessoas, o Vasco venceu o Sao Paulo por 1 a 0 e conquistou o bicampeonato brasileiro. Gol de cabeca de Sorato, cruzamento de Luis Carlos Winck.\nSlide 3 - COSTAS + ELENCO (#9 BEBETO): Acacio / Luis Carlos Winck / Quinonez / Mazinho / Ze do Carmo / Bismarck / William / Bebeto (maior jogador do torneio) / Sorato\nSlide 4 - MOSAICO: Logo Finta / Cruz vermelha na faixa diagonal / Gola polo branca com botao / MANGA LONGA rarissima / Coca-Cola nas costas\nSlide 5 - BEBETO #9: A numeracao 9 pertenceu ao maior jogador daquele Brasileirao: Bebeto. Contratado em polemica gigante (trocou o Flamengo pelo maior rival), foi a peca mais importante da SeleVasco de 1989. Eleito melhor jogador da America, seria campeao do mundo em 1994.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Finta \u2013 1989 | HOME | Manga Longa\n\nUma das camisas mais especiais do colecionismo cruzmaltino. A versao home de manga longa da Finta de 1989, com a Coca-Cola nas costas e a cruz vermelha no peito, e uma raridade que carrega o peso de um ano historico.\n\nFoi com esta camisa que o Vasco construiu a campanha do bicampeonato brasileiro, culminando no gol de cabeca de Sorato em pleno Morumbi, no dia 16 de dezembro de 1989. A SeleVasco de Nelsinho Rosa ficou para sempre na historia do futebol brasileiro.\n\nA numeracao 9 pertenceu a Bebeto, o maior jogador daquele torneio. Contratado em uma novela historica por ter trocado o Flamengo pelo maior rival, o atacante foi peca fundamental do bicampeonato e eleito o melhor jogador da America em 1989. Anos depois, seria campeao do mundo com a Selecao Brasileira em 1994.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 10,
+    "type": "carrossel",
+    "title": "Kappa 2001 | Away #6",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Libertadores 2001. Romario, Juninho Paulista e Euller convocados para a Selecao. Sem patrocinador.",
+    "imgObs": "Slide 1 - CAPA: Kappa 2001 Away\nSlide 2 - CONTEXTO: 2001. Tetracampeao brasileiro recente, o Vasco se lancou na Libertadores de 2001. O time contava com Romario, Juninho Paulista e Euller convocados para a Selecao Brasileira.\nSlide 3 - COSTAS + ELENCO (#6): Helton / Clebson / Odvan / Junior Baiano / Jorginho Paulista / Juninho Pernambucano / Juninho Paulista / Euller / Romario\nSlide 4 - MOSAICO: Logo Kappa / Escudo com 4 estrelas bordado / Faixa diagonal preta com listras vermelhas / Gola V com vivos pretos / SEM PATROCINADOR\nSlide 5 - DESTAQUE: Esta camisa chama atencao pelo detalhe raro: sem patrocinador na faixa diagonal. Com tres jogadores convocados simultaneamente para a Selecao: Romario, Juninho Paulista e Euller.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Kappa \u2013 2001 | AWAY\n\nUma camisa elegante, limpa e rara. A versao away da Kappa de 2001, sem patrocinador na faixa diagonal, representa o Vasco em uma das temporadas mais estreladas de sua historia recente.\n\nTetracampeao brasileiro e campeao da Mercosul com a Virada do Seculo, o Gigante da Colina chegou a Libertadores de 2001 com fome de mais glorias. O time contava com tres jogadores convocados simultaneamente para a Selecao Brasileira: Romario, Juninho Paulista e Euller.\n\nUma camisa que carrega o DNA vencedor da era dourada do Vasco.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 13,
+    "type": "carrossel",
+    "title": "Finta 1992 | Home #18",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Inicio do tricampeonato carioca. Ultima temporada de Roberto Dinamite. Tecido jacquard.",
+    "imgObs": "Slide 1 - CAPA: Finta 1992 Home\nSlide 2 - CONTEXTO: 1992 marcou o inicio de uma era dourada. O Vasco conquistou o Carioca de forma invicta, iniciando o historico tricampeonato consecutivo de 1992, 1993 e 1994. Time de Joel Santana com Edmundo, Roberto Dinamite em sua despedida, Bismarck e Geovani.\nSlide 3 - COSTAS + ELENCO (#18): Carlos Germano / Luis Carlos Winck / Jorge Luis / Luisinho / Leandro Avila / Geovani / Bismarck / Edmundo / Roberto Dinamite (ultima temporada) / Valdir Bigode\nSlide 4 - MOSAICO: Logo Finta / Cruz vermelha com 3 estrelas na faixa diagonal / Tecido jacquard com padrao geometrico / Gola polo branca com botao / Mangas brancas\nSlide 5 - DESTAQUE: Esta camisa representa o inicio do tricampeonato carioca. Ainda era possivel ver Roberto Dinamite ao lado de Edmundo e Bismarck, uma passagem de bastao unica na historia do clube.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Finta \u2013 1992 | HOME\n\nO inicio de uma era. Em 1992, o Vasco conquistou o Campeonato Carioca de forma invicta, abrindo o historico tricampeonato consecutivo de 92, 93 e 94, uma marca inedita na historia do clube. Era o renascimento do Gigante da Colina.\n\nEsta camisa da Finta, com o sofisticado tecido jacquard, a gola polo branca e a eterna Coca-Cola na faixa diagonal, viveu uma temporada especial: o ultimo ano de Roberto Dinamite com a cruz-malta no peito, ao lado de jovens como Edmundo, Bismarck e Geovani. Uma passagem de bastao entre geracoes que faria o Vasco dominar o Rio e logo conquistar o Brasil e a America.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 15,
+    "type": "carrossel",
+    "title": "Adidas 1988 | Away #10",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Bicampeonato carioca. Prata olimpica em Seul. Romario, Bismarck, Geovani e Roberto Dinamite.",
+    "imgObs": "Slide 1 - CAPA: Adidas 1988 Away\nSlide 2 - CONTEXTO: 1988. Bicampeonato carioca do Vasco sobre o Flamengo, com o gol historico de Cocada nos minutos finais. Sob Sebastiao Lazaroni, o time mais completo do Brasil: campeao carioca, vice-campeao brasileiro e varios jogadores na prata olimpica em Seul.\nSlide 3 - COSTAS + ELENCO (#10): Acacio / Paulo Roberto / Donato / Mazinho / Geovani (prata em Seul) / Ze do Carmo / Bismarck / Romario / Roberto Dinamite\nSlide 4 - MOSAICO: Logo Adidas Originals trevo / Cruz vermelha na faixa diagonal preta / Gola polo preta em canale / Numeracao vermelha com contorno / Coca-Cola\nSlide 5 - DESTAQUE: O numero 10 no Vasco de 1988 representava a criatividade de um elenco que dominava o futebol carioca. Esta camisa away viveu o bicampeonato estadual, a prata olimpica de Seul e o nascimento da geracao que logo conquistaria o Brasil.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Adidas \u2013 1988 | AWAY\n\nO numero mais sagrado do futebol estampado numa das camisas mais especiais do acervo cruzmaltino. Esta camisa away da Adidas de 1988, com a Coca-Cola nas costas e o inconfundivel trevo Originals no peito, viveu um ano historico para o Vasco.\n\nEra o time do bicampeonato carioca, conquistado sobre o Flamengo com o gol folclorico de Cocada nos minutos finais. O mesmo time que levou varios jogadores para a medalha de prata olimpica em Seul. Uma geracao que seria imortalizada em 1989 como a lendaria SeleVasco, bicampea do Brasil.\n\nUma camisa que carrega o peso de uma epoca dourada.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 17,
+    "type": "carrossel",
+    "title": "Adidas 1984 | Home #14",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Vice-campeao brasileiro. Dinamite artilheiro (16 gols). Unico clube com artilheiro e vice-artilheiro na mesma edicao.",
+    "imgObs": "Slide 1 - CAPA: Adidas 1984 Home\nSlide 2 - CONTEXTO: 1984. O Vasco chegou a final do Campeonato Brasileiro contra o Fluminense. Mesmo perdendo o titulo, dominou o Bola de Prata com 6 trofeus individuais. Dinamite foi artilheiro com 16 gols.\nSlide 3 - COSTAS + ELENCO (#14): Roberto Costa / Edevaldo / Ivan / Daniel Gonzalez / Airton / Pires / Arturzinho / Mario / Mauricinho / Roberto Dinamite (artilheiro com 16 gols)\nSlide 4 - MOSAICO: Logo Adidas Originals trevo / Cruz vermelha na faixa diagonal / Gola V branca em canale / SEM PATROCINADOR / Numeracao vermelha com contorno preto\nSlide 5 - DESTAQUE: Sem nenhum patrocinador, pura identidade. Roberto Dinamite foi artilheiro do Brasileirao naquele ano, e o Vasco tornou-se o unico clube a ter artilheiro e vice-artilheiro (Arturzinho, 14 gols) na mesma edicao.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Adidas \u2013 1984 | HOME\n\nUma camisa que carrega a essencia pura do Vasco. Sem patrocinador, sem adornos, so o trevo da Adidas, a faixa diagonal e a cruz vermelha. Uma epoca em que o manto falava por si so.\n\nEra o Vasco de 1984, vice-campeao brasileiro em uma final historica contra o Fluminense no Maracana. O Gigante da Colina nao ficou com o titulo, mas dominou o Bola de Prata com 6 trofeus individuais e tinha em Roberto Dinamite o artilheiro do torneio, com 16 gols. Ao lado de Arturzinho, vice-artilheiro com 14, o Vasco tornou-se o unico clube a ter artilheiro e vice-artilheiro na mesma edicao do Brasileiro.\n\nUm uniforme que representa uma geracao que construiu as bases para a SeleVasco que viria anos depois.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 20,
+    "type": "carrossel",
+    "title": "Adidas 1986 | Away #9",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Primeiro contrato profissional de Romario. Dupla lendaria com Roberto Dinamite. Patrocinio 3B RIO.",
+    "imgObs": "Slide 1 - CAPA: Adidas 1986 Away\nSlide 2 - CONTEXTO: 1986. O Vasco conquistou a Taca Guanabara e viveu um momento unico: Dinamite e Romario no mesmo ataque. O jovem Romario, em seu primeiro contrato profissional, foi artilheiro do Carioca com 20 gols.\nSlide 3 - COSTAS + ELENCO (#9): Acacio / Paulo Roberto / Donato / Mazinho / Geovani / Mauricinho / Tita / Roberto Dinamite / Romario\nSlide 4 - MOSAICO: Logo Adidas Originals trevo / Cruz vermelha na faixa diagonal / Patrocinio 3B RIO (primeiro patrocinador do Vasco) / Numeracao vermelha com contorno preto\nSlide 5 - DESTAQUE: A numeracao 9 remete ao ataque mais lendario da historia cruzmaltina: Dinamite e Romario. Juntos foram artilheiros do Carioca e conquistaram a Taca Guanabara.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Adidas \u2013 1986 | AWAY\n\n1986. O Vasco vivia um momento unico no futebol brasileiro: o ano em que Roberto Dinamite e Romario dividiram o mesmo ataque em Sao Januario. O veterano maior artilheiro da historia do clube ao lado do jovem prodigio que seria um dos maiores atacantes de todos os tempos. Juntos foram artilheiros do Campeonato Carioca e conquistaram a Taca Guanabara.\n\nEsta camisa away da Adidas carrega tambem outro marco historico: o patrocinio da 3B RIO, um dos primeiros patrocinadores a estampar sua marca no manto cruzmaltino.\n\nA numeracao 9 evoca o ataque mais lendario dessa geracao, que logo conquistaria o bicampeonato carioca de 1987 e 1988, base da SeleVasco bicampea do Brasil em 1989.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 22,
+    "type": "carrossel",
+    "title": "Kappa 2000 | Home | Manga Longa #7 - Paulo Miranda",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Tetracampeonato. Virada do Seculo. Mundial de Clubes. Raridade manga longa com patrocinio Ace.",
+    "imgObs": "Slide 1 - CAPA: Kappa 2000 Home Manga Longa\nSlide 2 - CONTEXTO: O ano 2000 foi o mais vitorioso da historia recente do Vasco. O Gigante venceu o Manchester United por 3 a 1 no Mundial de Clubes, protagonizou a Virada do Seculo contra o Palmeiras na Copa Mercosul (de 3 a 0 para 4 a 3) e encerrou a temporada como tetracampeao brasileiro.\nSlide 3 - COSTAS + ELENCO (#7 PAULO MIRANDA): Helton / Clebson / Odvan / Junior Baiano / Jorginho Paulista / Juninho Pernambucano / Juninho Paulista / Euller / Romario (artilheiro com 20 gols)\nSlide 4 - MOSAICO: Logo Kappa / Patrocinio Ace colorido / Escudo com 4 estrelas bordado / MANGA LONGA com punhos pretos e brancos (rarissimo) / Vivos brancos nas costuras\nSlide 5 - PAULO MIRANDA #7: A numeracao 7 pertenceu ao versatil Paulo Miranda, lateral e volante do elenco tetracampeao de 2000. A versao de manga longa desta camisa e uma das mais raras da era Kappa.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Kappa \u2013 2000 | HOME | Manga Longa\n\nRarissima. A versao de manga longa da Kappa 2000 e uma das pecas mais dificeis de encontrar no universo do colecionismo cruzmaltino, usada em partidas noturnas ou de temperatura mais fria, com o patrocinio da Ace e o escudo com as quatro estrelas que representam toda a grandeza do Gigante da Colina.\n\nEra o Vasco do tetracampeonato brasileiro, da vitoria historica sobre o Manchester United por 3 a 1 no Mundial de Clubes e da inesquecivel Virada do Seculo contra o Palmeiras, de 3 a 0 para 4 a 3 na Copa Mercosul. Uma camisa que carrega um dos anos mais gloriosos da historia cruzmaltina.\n\nA numeracao 7 pertenceu ao versatil Paulo Miranda, integrante do elenco tetracampeao de 2000.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 24,
+    "type": "carrossel",
+    "title": "Adidas 1988 | Away | Manga Longa #6",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Raridade manga longa. Bicampeonato carioca. SeleVasco em formacao.",
+    "imgObs": "Slide 1 - CAPA: Adidas 1988 Away Manga Longa\nSlide 2 - CONTEXTO: 1988. Bicampeonato carioca. Sebastiao Lazaroni no comando. Varios jogadores na prata olimpica em Seul. A geracao que logo conquistaria o Brasil.\nSlide 3 - COSTAS + ELENCO (#6): Acacio / Paulo Roberto / Donato / Mazinho / Geovani / Ze do Carmo / Bismarck / Romario / Roberto Dinamite\nSlide 4 - MOSAICO: Logo Adidas Originals trevo / Cruz vermelha na faixa diagonal / Gola polo preta com botao / Numeracao vermelha com contorno / MANGA LONGA rarissima / Coca-Cola\nSlide 5 - DESTAQUE: Versao away de manga longa da Adidas 1988, um dos modelos mais raros do colecionismo cruzmaltino. Usada em jogos noturnos ou de temperatura mais fria, com o inconfundivel trevo Originals no peito.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Adidas \u2013 1988 | AWAY | Manga Longa\n\nUma das pecas mais raras que um colecionador cruzmaltino pode ter. A versao away de manga longa da Adidas de 1988 e um exemplar pouquissimo visto, usada em partidas noturnas ou em dias frios, com o inconfundivel trevo Originals no peito, a Coca-Cola nas costas e a numeracao vermelha que marcou uma era.\n\nEra o Vasco de Acacio, Donato, Mazinho, Romario, Bismarck e Roberto Dinamite, campeao carioca de 1988 sobre o Flamengo com o gol folclorico de Cocada nos minutos finais. Uma geracao que seria imortalizada em 1989 como a lendaria SeleVasco, bicampea do Brasil.\n\nUma camisa de jogo. Uma epoca que nao se esquece.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 25,
+    "type": "carrossel",
+    "title": "Penalty 1995 | Goleiro Roxa - EM ALTERACAO",
+    "pending": true,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "EM ALTERACAO",
+    "imgObs": "EM ALTERACAO",
+    "caption": "EM ALTERACAO"
+  },
+  {
+    "month": 4,
+    "day": 27,
+    "type": "carrossel",
+    "title": "Kappa 1997 | Home #29 | Supercopa",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Modelo exclusivo da Supercopa Sul-Americana. Numeracao em circulo. Edmundo 42 gols na temporada.",
+    "imgObs": "Slide 1 - CAPA: Kappa 1997 Home Supercopa\nSlide 2 - CONTEXTO: 1997. Com Edmundo em chamas, o Gigante disputou a Supercopa Sul-Americana usando um modelo exclusivo da Kappa, com numeracao diferenciada em circulo e escudo especial (3 estrelas embaixo + 1 acima).\nSlide 3 - COSTAS + ELENCO (#29): Carlos Germano / Mauro Galvao / Odvan / Felipe / Luisinho / Nasa / Juninho Pernambucano / Ramon / Edmundo (42 gols na temporada) / Evair\nSlide 4 - MOSAICO: Logo Kappa / Escudo com disposicao especial de estrelas (3 embaixo + 1 acima) / Numeracao exclusiva em circulo nas costas / Listras vermelhas na faixa diagonal / Gola polo branca com botao\nSlide 5 - DESTAQUE: Um dos modelos mais raros da historia cruzmaltina, usada exclusivamente na Supercopa Sul-Americana de 1997. A numeracao dentro de um circulo nas costas e um registro unico do Vasco em sua fase mais vitoriosa dos anos 90.\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Kappa \u2013 1997 | HOME | Supercopa Sul-Americana\n\nUma das pecas mais raras do acervo cruzmaltino. Esta camisa foi utilizada pelo Vasco na Supercopa Sul-Americana de 1997, competicao exclusiva para ex-campeoes da Libertadores, e traz detalhes que a tornam unica: a numeracao dentro de um circulo nas costas e o escudo com disposicao especial de estrelas, desenvolvidos pela Kappa exclusivamente para a competicao continental.\n\nEra o Vasco da Gama em sua era mais dourada. Com Edmundo em chamas (42 gols na temporada), o Gigante da Colina encerrou aquele ano como tricampeao brasileiro, com o melhor ataque da historia do campeonato: 69 gols marcados.\n\nUma camisa de jogo. Uma epoca inesquecivel.\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  },
+  {
+    "month": 4,
+    "day": 29,
+    "type": "carrossel",
+    "title": "Kappa 2000 | Away #13 - Marica",
+    "pending": false,
+    "trafego": false,
+    "postado": false,
+    "imgs": [],
+    "videoLink": "",
+    "slides": "",
+    "slidesNum": "7 slides",
+    "roteiro": "",
+    "descricao": "Tetracampeonato. Virada do Seculo. Marica cria da base.",
+    "imgObs": "Slide 1 - CAPA: Kappa 2000 Away\nSlide 2 - CONTEXTO: O ano 2000 foi epico. Alem do tetracampeonato, o Vasco venceu o Manchester United por 3 a 1 no Mundial de Clubes e protagonizou a Virada do Seculo contra o Palmeiras na Copa Mercosul.\nSlide 3 - COSTAS + ELENCO (#13 MARICA): Helton / Clebson / Odvan / Junior Baiano / Jorginho Paulista / Juninho Pernambucano / Juninho Paulista / Euller / Romario\nSlide 4 - MOSAICO: Logo Kappa / Patrocinio Ace colorido / Escudo com 4 estrelas bordado / Nome MARICA nas costas / Listras vermelhas na faixa diagonal\nSlide 5 - MARICA #13: A numeracao 13 com o nome MARICA pertenceu ao lateral-direito Sergio Silva de Souza Junior, cria da base de Sao Januario. Campeao brasileiro em 1997 e 2000, da Libertadores de 1998, do Carioca de 1998 e do Rio-Sao Paulo de 1999. Eterno na memoria vascaina pelos gritos do Antonio Lopes: Volta Marica! Volta!\nSlide 6 - CTA: TEM UMA CAMISA ANTIGA DO VASCO? COMPRAMOS SUA CAMISA!\nSlide 7 - ENCERRAMENTO: Logo Memoria Cruzmaltina",
+    "caption": "\ud83d\udca2 Kappa \u2013 2000 | AWAY\n\nO ano 2000 entrou para sempre na historia do Gigante da Colina. O Vasco venceu o Manchester United por 3 a 1 no Mundial de Clubes, protagonizou a Virada do Seculo contra o Palmeiras (de 3 a 0 para 4 a 3 na Copa Mercosul) e encerrou a temporada como tetracampeao brasileiro, com Romario artilheiro com 20 gols.\n\nEsta camisa away da Kappa guarda toda essa magia: faixa diagonal preta com listras vermelhas, escudo bordado com quatro estrelas e o nome de um filho da casa estampado nas costas.\n\nA numeracao 13 pertenceu ao lateral-direito Marica, cria da base de Sao Januario, integrante de um dos elencos mais vencedores da historia do clube. Eterno na memoria vascaina pelos epicos gritos do Antonio Lopes: Volta Marica! Volta!\n\n\ud83c\udff4 Memoria Cruzmaltina\nAcervo \u2022 Historia \u2022 Colecionismo"
+  }
+];
+
+// Ensure imgs array on every post
+POSTS = POSTS.map(p => ({...p, imgs: p.imgs||[], caption:p.caption||'', descricao:p.descricao||'', imgObs:p.imgObs||'', roteiro:p.roteiro||'', videoLink:p.videoLink||'', slides:p.slides||'', slidesNum:p.slidesNum||'', postado:p.postado||false}));
+
+// ── Planning data per month (saved separately) ──
+let PLAN_DATA = {1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{}};
+
+if (window.__PERSISTED_CALENDAR_STATE__) {
+  applyCalendarState(window.__PERSISTED_CALENDAR_STATE__);
+}
+
+function getPlan(m){ return PLAN_DATA[m] || (PLAN_DATA[m]={}); }
+function savePlanField(m, field, val){ getPlan(m)[field] = val; }
+
+const TYPE_ICONS={arte:'🎨',foto:'📸',story:'📱',reels:'🎬',carrossel:'🖼'};
+const TYPE_LABELS={arte:'Arte',foto:'Foto',story:'Story',reels:'Reels',carrossel:'Carrossel'};
+
+
+let currentMonthIdx=null, currentDay=null, currentPostIdx=null;
+let modalType='arte', modalImgs=[];
+let _editMode=true;
+let _lbMonthIdx=null, _lbDay=null, _lbIdx=0;
+
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function getPost(mIdx,day){return POSTS.find(p=>p.month===MONTHS_CONFIG[mIdx].month&&p.day===day);}
+function getPostIdx(mIdx,day){return POSTS.findIndex(p=>p.month===MONTHS_CONFIG[mIdx].month&&p.day===day);}
+
+// ── Stats ──
+function updateStats(){
+  const c={total:0,arte:0,foto:0,story:0,reels:0,carrossel:0,pend:0,postado:0};
+  POSTS.forEach(p=>{c.total++;if(c[p.type]!==undefined)c[p.type]++;if(p.pending)c.pend++;if(p.postado)c.postado++;});
+  ['Total','Arte','Foto','Story','Reels','Carrossel','Pend','Postado'].forEach(k=>{
+    const el=document.getElementById('stat'+k);
+    if(el)el.textContent=c[k.toLowerCase()];
+  });
+}
+
+// ── Build Month Nav ──
+function buildMonthNav(){
+  const nav=document.getElementById('monthNav');
+  nav.innerHTML='';
+  MONTHS_CONFIG.forEach((mc,i)=>{
+    const btn=document.createElement('button');
+    btn.className='month-btn';
+    btn.textContent=MONTH_NAMES[mc.month-1].substring(0,3);
+    btn.onclick=()=>scrollToMonth(i);
+    btn.id='mnav'+i;
+    nav.appendChild(btn);
+  });
+}
+
+function scrollToMonth(i){
+  const el=document.getElementById('month-'+i);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── Render All Months ──
+function renderAll(){
+  const container=document.getElementById('monthsContainer');
+  container.innerHTML='';
+  MONTHS_CONFIG.forEach((mc,mIdx)=>{
+    container.appendChild(buildMonthBlock(mc,mIdx));
+  });
+  updateStats();
+}
+
+function buildPlanPanel(mc){
+  const m = mc.month;
+  const p = getPlan(m);
+  const panel = document.createElement('div');
+  panel.className = 'plan-panel';
+
+  panel.innerHTML = `
+    <div class="plan-header-row">
+      <span class="plan-icon">📋</span>
+      <span>Planejamento do Mês</span>
+    </div>
+    <div class="plan-grid">
+      <div class="plan-cell">
+        <div class="plan-label"><span>🎯</span> Objetivos de Campanha</div>
+        <textarea class="plan-input tall" placeholder="Ex: Aumentar leads, lançar promoção, gerar awareness…" onchange="savePlanField(${m},'objetivos',this.value)">${p.objetivos||''}</textarea>
+      </div>
+      <div class="plan-cell">
+        <div class="plan-label"><span>💰</span> Investimento em Mídia</div>
+        <textarea class="plan-input tall" placeholder="Ex: R$ 1.000 — Meta Ads + Google Ads…" onchange="savePlanField(${m},'investimento',this.value)">${p.investimento||''}</textarea>
+      </div>
+      <div class="plan-cell">
+        <div class="plan-label"><span>💸</span> Tráfego Pago</div>
+        <textarea class="plan-input tall" placeholder="Ex: R$ 600 Meta Ads (feed + stories), R$ 400 Google. Públicos, segmentações…" onchange="savePlanField(${m},'trafego',this.value)">${p.trafego||''}</textarea>
+      </div>
+      <div class="plan-cell">
+        <div class="plan-label"><span>🌟</span> Influenciadores</div>
+        <textarea class="plan-input tall" placeholder="Ex: @perfil — tipo de conteúdo, formato, prazo…" onchange="savePlanField(${m},'influenciadores',this.value)">${p.influenciadores||''}</textarea>
+      </div>
+      <div class="plan-cell" style="border-right:none">
+        <div class="plan-label"><span>👤</span> Persona do Mês</div>
+        <textarea class="plan-input tall" placeholder="Ex: Público-alvo, faixa etária, dores, plataformas que usa…" onchange="savePlanField(${m},'persona',this.value)">${p.persona||''}</textarea>
+      </div>
+    </div>
+    <div class="plan-grid-bottom">
+      <div class="plan-cell-full">
+        <div class="plan-label"><span>📝</span> Observações Gerais</div>
+        <textarea class="plan-input" style="min-height:48px;resize:vertical" placeholder="Anotações livres, pendências, decisões, reuniões, contatos…" onchange="savePlanField(${m},'observacoes',this.value)">${p.observacoes||''}</textarea>
+      </div>
+    </div>
+  `;
+  return panel;
+}
+
+function buildMonthBlock(mc,mIdx){
+  const block=document.createElement('div');
+  block.className='month-block';
+  block.id='month-'+mIdx;
+
+  // Header
+  const mh=document.createElement('div');
+  mh.className='month-header';
+  mh.innerHTML=`<div class="month-title">${MONTH_NAMES[mc.month-1]} <em>${mc.year}</em></div><div class="month-badge">Mês ${mc.month}</div>`;
+  block.appendChild(mh);
+
+  // Notes
+  const mn=document.createElement('div');
+  mn.className='month-notes';
+  mn.contentEditable='true';
+  mn.setAttribute('data-month', mc.month);
+  mn.setAttribute('placeholder', 'Descreva a campanha do mês, promoções, objetivos, datas importantes…');
+  mn.innerHTML = mc.notes || '';
+  mn.addEventListener('input', ()=>{ MONTHS_CONFIG[mIdx].notes = mn.innerHTML; });
+  block.appendChild(mn);
+
+  // Planning panel
+  block.appendChild(buildPlanPanel(mc));
+  const outer=document.createElement('div');
+  outer.className='cal-grid-outer';
+  // DOW header
+  const dow=document.createElement('div');
+  dow.className='cal-dow';
+  ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach((d,i)=>{
+    const c=document.createElement('div');
+    c.className='cal-dow-cell'+(i===0||i===6?' wknd':'');
+    c.textContent=d;
+    dow.appendChild(c);
+  });
+  outer.appendChild(dow);
+
+  // Build weeks array
+  const weeks=[];
+  let week=[];
+  // pad start
+  for(let p=0;p<mc.firstDow;p++) week.push(0);
+  for(let d=1;d<=mc.days;d++){
+    week.push(d);
+    if(week.length===7){weeks.push(week);week=[];}
+  }
+  if(week.length>0){while(week.length<7)week.push(0);weeks.push(week);}
+
+  const calWeeks=document.createElement('div');
+  calWeeks.className='cal-weeks';
+
+  weeks.forEach(wk=>{
+    const weekEl=document.createElement('div');
+    weekEl.className='cal-week';
+    wk.forEach((day,i)=>{
+      const isWknd=(i===0||i===6);
+      const cell=document.createElement('div');
+      cell.className='cal-day'+(day===0?' empty':'')+(isWknd&&day>0?' wknd-col':'');
+      if(day>0){
+        cell.dataset.day=day;
+        let html=`<div class="day-num">${day}</div>`;
+        if(mc.special&&mc.special[day]){
+          html+=`<div class="special-label">${mc.special[day]}</div>`;
+        }
+        const post=getPost(mIdx,day);
+        if(post){
+          const pc=post.pending?' pendente':post.postado?' postado':'';
+          let gallHtml='<div class="card-gallery">';
+          (post.imgs||[]).forEach((src,idx)=>{
+            gallHtml+=`<div class="card-thumb" onclick="event.stopPropagation();onThumbClick(${mIdx},${day},${idx})"><img src="${src}" alt=""><button class="rm-thumb" onclick="event.stopPropagation();removeCardThumb(${mIdx},${day},${idx})">✕</button></div>`;
+          });
+          gallHtml+=`<button class="add-thumb-btn" onclick="event.stopPropagation();triggerCardImg(${mIdx},${day})" title="Adicionar foto">＋</button></div>`;
+          const postadoBadge=post.postado?`<div class="postado-badge">✅ Postado</div>`:'';
+          const videoBadge=(post.type==='reels'&&post.videoLink)?`<a class="video-link-badge" href="${esc(post.videoLink)}" target="_blank" onclick="event.stopPropagation()">🎬 Ver</a>`:'';
+          const tpIcon=post.trafego?`<div class="tp-icon" title="Tráfego Pago">💸</div>`:'';
+          html+=`
+            <div class="post-card ${post.type}${pc}" onclick="openModal(${mIdx},${day})">
+              <div class="card-actions">
+                <button class="card-btn" onclick="event.stopPropagation();togglePostado(${mIdx},${day})" title="Toggle postado">${post.postado?'↩️':'✅'}</button>
+                <button class="card-btn" onclick="event.stopPropagation();openModal(${mIdx},${day})">✏️</button>
+                <button class="card-btn" onclick="event.stopPropagation();deletePostByKey(${mIdx},${day})">🗑</button>
+              </div>
+              <div class="post-type-tag">${TYPE_ICONS[post.type]||''} ${TYPE_LABELS[post.type]||post.type}${post.pending?' · ⏳':''}</div>
+              ${postadoBadge}${videoBadge}
+              <div class="post-title" contenteditable="${_editMode?'true':'false'}" spellcheck="false"
+                onclick="event.stopPropagation()"
+                onblur="updateTitle(${mIdx},${day},this.innerText)">${esc(post.title)}</div>
+              ${tpIcon}
+              ${gallHtml}
+            </div>`;
+        } else {
+          html+=`<button class="add-post-btn" onclick="openModal(${mIdx},${day},true)">＋ post</button>`;
+        }
+        cell.innerHTML=html;
+      } else {
+        cell.innerHTML='<div class="day-num"></div>';
+      }
+      weekEl.appendChild(cell);
+    });
+    calWeeks.appendChild(weekEl);
+  });
+
+  outer.appendChild(calWeeks);
+  block.appendChild(outer);
+  return block;
+}
+
+function updateTitle(mIdx,day,t){
+  const i=getPostIdx(mIdx,day);
+  if(i>=0)POSTS[i].title=t.trim();
+}
+
+// ── Modal ──
+function openModal(mIdx,day,isNew=false){
+  currentMonthIdx=mIdx; currentDay=day;
+  const idx=getPostIdx(mIdx,day); currentPostIdx=idx;
+  const post=idx>=0?POSTS[idx]:null;
+  const mc=MONTHS_CONFIG[mIdx];
+  document.getElementById('modalDateLabel').textContent=`${day}/${mc.month}/${mc.year}`;
+  modalType=post?post.type:'arte';
+  modalImgs=post?[...(post.imgs||[])]:[];
+  document.getElementById('modalPostTitle').value=post?.title||'';
+  document.getElementById('modalCaption').value=post?.caption||'';
+  document.getElementById('modalImgObs').value=post?.imgObs||'';
+  document.getElementById('modalRoteiro').value=post?.roteiro||'';
+  document.getElementById('modalSlides').value=post?.slides||'';
+  document.getElementById('modalSlidesNum').value=post?.slidesNum||'';
+  document.getElementById('modalVideoLink').value=post?.videoLink||'';
+  document.getElementById('modalPending').checked=post?.pending||false;
+  document.getElementById('modalPostado').checked=post?.postado||false;
+  document.getElementById('modalTrafego').checked=post?.trafego||false;
+  document.querySelectorAll('.type-opt').forEach(el=>el.classList.toggle('selected',el.dataset.type===modalType));
+  updateModalFields(modalType);
+  renderModalGallery();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');currentMonthIdx=null;currentDay=null;}
+function selectType(t){
+  modalType=t;
+  document.querySelectorAll('.type-opt').forEach(el=>el.classList.toggle('selected',el.dataset.type===t));
+  updateModalFields(t);
+}
+function updateModalFields(t){
+  const show=id=>{const el=document.getElementById(id);if(el)el.style.display='';};
+  const hide=id=>{const el=document.getElementById(id);if(el)el.style.display='none';};
+  ['fieldCaption','fieldImgObs','fieldRoteiro','fieldSlides','fieldSlidesNum','fieldVideoLink'].forEach(hide);
+  if(t==='story'){}
+  else if(t==='reels'){show('fieldVideoLink');show('fieldCaption');show('fieldRoteiro');}
+  else if(t==='carrossel'){show('fieldCaption');show('fieldSlides');show('fieldSlidesNum');}
+  else{show('fieldCaption');show('fieldImgObs');}
+}
+
+function renderModalGallery(){
+  const gal=document.getElementById('modalGallery');gal.innerHTML='';
+  modalImgs.forEach((src,i)=>{
+    const w=document.createElement('div');w.className='mgal-thumb';
+    w.innerHTML=`<img src="${src}" alt=""><button class="rm-btn" onclick="removeModalImg(${i})" type="button">✕</button>`;
+    gal.appendChild(w);
+  });
+  const btn=document.createElement('button');btn.className='mgal-add';btn.type='button';
+  btn.innerHTML='<span style="font-size:22px">＋</span><span class="lbl">foto</span>';
+  btn.onclick=()=>{
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;inp.style.display='none';document.body.appendChild(inp);
+    inp.onchange=e=>handleGalleryFiles(Array.from(e.target.files));inp.click();
+  };
+  gal.appendChild(btn);
+}
+function handleGalleryFiles(files){
+  if(!files.length)return;let n=0;
+  files.forEach(f=>{const r=new FileReader();r.onload=e=>{modalImgs.push(e.target.result);if(++n===files.length)renderModalGallery();};r.readAsDataURL(f);});
+}
+function handleDrop(e){e.preventDefault();document.getElementById('modalGallery').classList.remove('drag-over');handleGalleryFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));}
+function removeModalImg(i){modalImgs.splice(i,1);renderModalGallery();}
+
+function savePost(){
+  const title=document.getElementById('modalPostTitle').value.trim();
+  if(!title){alert('Por favor, adicione um título.');return;}
+  const mc=MONTHS_CONFIG[currentMonthIdx];
+  const pd={
+    month:mc.month,day:currentDay,type:modalType,title,
+    caption:document.getElementById('modalCaption').value,
+    imgObs:document.getElementById('modalImgObs').value,
+    roteiro:document.getElementById('modalRoteiro').value,
+    videoLink:document.getElementById('modalVideoLink').value.trim(),
+    slides:document.getElementById('modalSlides').value,
+    slidesNum:document.getElementById('modalSlidesNum').value,
+    pending:document.getElementById('modalPending').checked,
+    postado:document.getElementById('modalPostado').checked,
+    trafego:document.getElementById('modalTrafego').checked,
+    imgs:[...modalImgs]
+  };
+  if(currentPostIdx>=0){POSTS[currentPostIdx]=pd;}else{POSTS.push(pd);}
+  closeModal();renderAll();showToast('✅ Post salvo!');
+}
+function deletePost(){if(!confirm('Excluir este post?'))return;deletePostByKey(currentMonthIdx,currentDay);closeModal();}
+function deletePostByKey(mIdx,day){
+  const mc=MONTHS_CONFIG[mIdx];
+  const i=POSTS.findIndex(p=>p.month===mc.month&&p.day===day);
+  if(i>=0){POSTS.splice(i,1);renderAll();showToast('Post excluído.');}
+}
+function togglePostado(mIdx,day){
+  const mc=MONTHS_CONFIG[mIdx];
+  const i=POSTS.findIndex(p=>p.month===mc.month&&p.day===day);
+  if(i<0)return;
+  POSTS[i].postado=!POSTS[i].postado;
+  if(POSTS[i].postado)POSTS[i].pending=false;
+  renderAll();showToast(POSTS[i].postado?'✅ Marcado como postado!':'↩️ Desmarcado.');
+}
+
+// ── Card image upload ──
+let _cardMIdx=null,_cardDay2=null;
+const _cardIn=document.createElement('input');
+_cardIn.type='file';_cardIn.accept='image/*';_cardIn.multiple=true;_cardIn.style.display='none';
+document.body.appendChild(_cardIn);
+_cardIn.addEventListener('change',e=>{
+  const files=Array.from(e.target.files);
+  if(!files.length||_cardMIdx===null)return;
+  const mc=MONTHS_CONFIG[_cardMIdx];
+  const idx=POSTS.findIndex(p=>p.month===mc.month&&p.day===_cardDay2);
+  if(idx<0)return;
+  let n=0;
+  files.forEach(f=>{const r=new FileReader();r.onload=ev=>{POSTS[idx].imgs=POSTS[idx].imgs||[];POSTS[idx].imgs.push(ev.target.result);if(++n===files.length){renderAll();showToast(`${files.length} imagem(ns) adicionada(s)!`);}};r.readAsDataURL(f);});
+  _cardIn.value='';
+});
+function triggerCardImg(mIdx,day){_cardMIdx=mIdx;_cardDay2=day;_cardIn.click();}
+function removeCardThumb(mIdx,day,idx){
+  const mc=MONTHS_CONFIG[mIdx];
+  const i=POSTS.findIndex(p=>p.month===mc.month&&p.day===day);
+  if(i>=0){POSTS[i].imgs.splice(idx,1);renderAll();showToast('Imagem removida.');}
+}
+
+// ── Lightbox ──
+function onThumbClick(mIdx,day,idx){
+  if(_editMode){removeCardThumb(mIdx,day,idx);return;}
+  openLightbox(mIdx,day,idx);
+}
+function openLightbox(mIdx,day,idx){
+  const post=getPost(mIdx,day);
+  if(!post||!post.imgs||!post.imgs.length)return;
+  _lbMonthIdx=mIdx;_lbDay=day;_lbIdx=idx;
+  renderLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown',lbKeyHandler);
+}
+function renderLightbox(){
+  const post=getPost(_lbMonthIdx,_lbDay);if(!post)return;
+  const imgs=post.imgs||[];
+  document.getElementById('lbImg').src=imgs[_lbIdx]||'';
+  document.getElementById('lbTitle').textContent=post.title;
+  const mc=MONTHS_CONFIG[_lbMonthIdx];
+  document.getElementById('lbDate').textContent=`${_lbDay}/${mc.month}/${mc.year} · ${TYPE_LABELS[post.type]||post.type}`;
+  document.getElementById('lbCounter').textContent=imgs.length>1?`${_lbIdx+1} / ${imgs.length}`:'';
+  document.getElementById('lbPrev').disabled=_lbIdx===0;
+  document.getElementById('lbNext').disabled=_lbIdx===imgs.length-1;
+}
+function lbStep(dir){
+  const post=getPost(_lbMonthIdx,_lbDay);if(!post)return;
+  _lbIdx=Math.max(0,Math.min(_lbIdx+dir,(post.imgs||[]).length-1));renderLightbox();
+}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.removeEventListener('keydown',lbKeyHandler);}
+function lbKeyHandler(e){if(e.key==='Escape')closeLightbox();if(e.key==='ArrowRight')lbStep(1);if(e.key==='ArrowLeft')lbStep(-1);}
+
+// ── Edit Mode ──
+function toggleEditMode(){
+  _editMode=!_editMode;
+  document.body.classList.toggle('view-mode',!_editMode);
+  document.querySelectorAll('.post-title').forEach(el=>{el.contentEditable=_editMode?'true':'false';});
+  const btn=document.getElementById('editModeBtn');
+  if(_editMode){btn.textContent='✏️ Modo Edição';btn.classList.remove('btn-cyan');btn.classList.add('btn-ghost');showToast('✏️ Modo edição ativado');}
+  else{btn.textContent='🔒 Edição Bloqueada';btn.classList.remove('btn-ghost');btn.classList.add('btn-cyan');showToast('🔒 Bloqueado · clique nas fotos para ampliar');}
+}
+
+// ── Datas Comemorativas ──
+function openDatasModal(){
+  const sel = document.getElementById('datasMonthSel');
+  sel.value = '1';
+  renderDatasList();
+  document.getElementById('datasOverlay').classList.add('open');
+}
+function closeDatasModal(){
+  document.getElementById('datasOverlay').classList.remove('open');
+}
+function renderDatasList(){
+  const mIdx = parseInt(document.getElementById('datasMonthSel').value) - 1;
+  const mc = MONTHS_CONFIG[mIdx];
+  const list = document.getElementById('datasList');
+  list.innerHTML = '';
+  Object.entries(mc.special || {}).forEach(([day, label]) => {
+    list.appendChild(makeDataRow(day, label));
+  });
+}
+function makeDataRow(day='', label=''){
+  const row = document.createElement('div');
+  row.className = 'data-row';
+  row.innerHTML = `
+    <input class="day-input" type="number" min="1" max="31" placeholder="Dia" value="${day}" style="border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:13px;text-align:center;outline:none;width:100%;">
+    <input class="label-input" type="text" placeholder="Ex: 🌸 Dia das Mães" value="${label}" style="border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;">
+    <button class="rm-data-btn" onclick="this.closest('.data-row').remove()" style="width:34px;height:34px;border-radius:8px;border:none;background:#fee2e2;color:#be1f1f;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🗑</button>
+  `;
+  return row;
+}
+function addDataRow(){
+  document.getElementById('datasList').appendChild(makeDataRow());
+}
+function saveDatas(){
+  const mIdx = parseInt(document.getElementById('datasMonthSel').value) - 1;
+  const rows = document.querySelectorAll('#datasList .data-row');
+  const newSpecial = {};
+  rows.forEach(row => {
+    const day   = parseInt(row.querySelector('.day-input').value);
+    const label = row.querySelector('.label-input').value.trim();
+    if(day >= 1 && day <= 31 && label) newSpecial[day] = label;
+  });
+  MONTHS_CONFIG[mIdx].special = newSpecial;
+  closeDatasModal();
+  renderAll();
+  showToast('🗓 Datas comemorativas atualizadas!');
+}
+document.getElementById('datasMonthSel').addEventListener('change', renderDatasList);
+document.getElementById('datasOverlay').addEventListener('click', e=>{if(e.target===e.currentTarget)closeDatasModal();});
+
+// ── Export ──
+function exportHTML(){
+  const client = document.getElementById('hdrClient').innerText.trim();
+  const year = document.getElementById('hdrYear').innerText.trim();
+  const state = collectCalendarState();
+  const html = buildPersistentHtml(state);
+  const slug = (client || 'cliente').toLowerCase().replace(/\s+/g,'-');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], { type:'text/html' }));
+  a.download = `calendario_editorial_${slug}_${year}.html`;
+  a.click();
+  showToast('📥 HTML salvo com todas as edições e imagens!');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ── Init ──
+buildMonthNav();
+renderAll();
+
+// Intersection observer to highlight active month in nav
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      const idx=parseInt(id.replace('month-',''));
+      document.querySelectorAll('.month-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+    }
+  });
+},{threshold:0.15});
+document.querySelectorAll('.month-block').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
