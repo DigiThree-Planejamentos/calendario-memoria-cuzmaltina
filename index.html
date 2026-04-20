@@ -1132,5 +1132,111 @@ buildMonthNav();
 renderAll();
 initMonthObserver();
 </script>
+<script id="github-persist">
+const GITHUB_CONFIG = {
+  owner: "COLOQUE_AQUI",
+  repo: "COLOQUE_AQUI",
+  path: "index.html",
+  branch: "main"
+};
+
+function getGithubToken() {
+  let token = localStorage.getItem("github_token");
+  if (!token) {
+    token = prompt("Cole seu token do GitHub:");
+    if (!token) throw new Error("Token não informado");
+    localStorage.setItem("github_token", token);
+  }
+  return token;
+}
+
+function resetGithubToken() {
+  localStorage.removeItem("github_token");
+  alert("Token removido");
+}
+
+function collectCalendarState() {
+  return {
+    posts: window.POSTS || [],
+    months: window.MONTHS_CONFIG || {},
+    header: {
+      client: document.getElementById("hdrClient")?.innerText,
+      year: document.getElementById("hdrYear")?.innerText,
+      sub: document.getElementById("hdrSub")?.innerText
+    }
+  };
+}
+
+function applyCalendarState(state) {
+  if (!state) return;
+  window.POSTS = state.posts || [];
+  window.MONTHS_CONFIG = state.months || {};
+
+  if (state.header) {
+    document.getElementById("hdrClient").innerText = state.header.client || "";
+    document.getElementById("hdrYear").innerText = state.header.year || "";
+    document.getElementById("hdrSub").innerText = state.header.sub || "";
+  }
+}
+
+function buildPersistentHtml(state) {
+  let html = document.documentElement.outerHTML;
+
+  const script = `
+<script id="persisted-state">
+window.__PERSISTED_CALENDAR_STATE__ = ${JSON.stringify(state)};
+</script>
+`;
+
+  html = html.replace(/<script id="persisted-state">[\s\S]*?<\/script>/, "");
+  html = html.replace("</body>", script + "\n</body>");
+
+  return html;
+}
+
+window.addEventListener("load", () => {
+  if (window.__PERSISTED_CALENDAR_STATE__) {
+    applyCalendarState(window.__PERSISTED_CALENDAR_STATE__);
+  }
+});
+
+async function salvarAlteracoes() {
+  try {
+    const token = getGithubToken();
+    const { owner, repo, path, branch } = GITHUB_CONFIG;
+
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+    const res = await fetch(url, {
+      headers: { Authorization: `token ${token}` }
+    });
+
+    const data = await res.json();
+
+    const state = collectCalendarState();
+    const newHtml = buildPersistentHtml(state);
+
+    const update = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Update calendário",
+        content: btoa(unescape(encodeURIComponent(newHtml))),
+        sha: data.sha,
+        branch
+      })
+    });
+
+    if (!update.ok) throw new Error("Erro ao salvar");
+
+    alert("Salvo com sucesso 🚀");
+  } catch (e) {
+    alert("Erro: " + e.message);
+  }
+}
+</script>
 </body>
 </html>
